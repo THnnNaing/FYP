@@ -2,11 +2,13 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Department;
 use App\Models\Designation;
 use App\Models\Employee;
+use App\Models\Leave;
+use App\Models\LeaveType;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,6 +22,11 @@ class DatabaseSeeder extends Seeder
         $manager = Designation::create(['title' => 'Manager']);
         $developer = Designation::create(['title' => 'Developer']);
 
+        // Leave Types
+        $sick = LeaveType::create(['name' => 'Sick Leave', 'is_paid' => true]);
+        $vacation = LeaveType::create(['name' => 'Vacation Leave', 'is_paid' => true]);
+        $unpaid = LeaveType::create(['name' => 'Unpaid Leave', 'is_paid' => false]);
+
         // Employees
         $adminEmployee = Employee::create([
             'department_id' => $hr->id,
@@ -32,7 +39,7 @@ class DatabaseSeeder extends Seeder
             'phonenumber' => '1234567890',
             'email' => 'admin@example.com',
             'status' => 'permanent',
-            'basic_salary' => 1500000.00,
+            'basic_salary' => 1500000.0,
         ]);
 
         $hrEmployee = Employee::create([
@@ -46,7 +53,7 @@ class DatabaseSeeder extends Seeder
             'phonenumber' => '0987654321',
             'email' => 'hr@example.com',
             'status' => 'permanent',
-            'basic_salary' => 1500000.00,
+            'basic_salary' => 1500000.0,
         ]);
 
         $employee = Employee::create([
@@ -60,7 +67,7 @@ class DatabaseSeeder extends Seeder
             'phonenumber' => '1112223333',
             'email' => 'employee@example.com',
             'status' => 'intern',
-            'basic_salary' => 1000000.00,
+            'basic_salary' => 1000000.0,
         ]);
 
         // Users
@@ -100,7 +107,28 @@ class DatabaseSeeder extends Seeder
             'phonenumber' => '4445556666',
             'email' => 'john.doe@example.com',
             'status' => 'contracted',
-            'basic_salary' => 1500000.00,
+            'basic_salary' => 1500000.0,
+        ]);
+
+        // Leaves
+        Leave::create([
+            'employee_id' => $employee->id,
+            'leave_type_id' => $sick->id,
+            'start_date' => now(),
+            'end_date' => now()->addDays(2),
+            'reason' => 'Medical appointment',
+            'status' => 'pending',
+        ]);
+
+        Leave::create([
+            'employee_id' => $hrEmployee->id,
+            'leave_type_id' => $vacation->id,
+            'start_date' => now()->addDays(5),
+            'end_date' => now()->addDays(7),
+            'reason' => 'Family vacation',
+            'status' => 'approved',
+            'approved_by' => User::where('user_type', 'admin')->first()->id,
+            'approved_at' => now(),
         ]);
     }
 }
