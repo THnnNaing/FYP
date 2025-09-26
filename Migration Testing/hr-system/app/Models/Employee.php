@@ -54,8 +54,18 @@ class Employee extends Model
         return $this->hasMany(Payroll::class);
     }
 
-    public function scopeActive($query)
+    // public function scopeActive($query)
+    // {
+    //     return $query->whereIn('status', ['active', 'permanent']);
+    // }
+
+    public function trainingPrograms()
     {
-        return $query->whereIn('status', ['active', 'permanent']);
+        return $this->hasMany(TrainingProgram::class, 'instructor_employee_id');
+    }
+
+    public function trainingAssignments()
+    {
+        return $this->hasMany(TrainingAssignment::class);
     }
 }
