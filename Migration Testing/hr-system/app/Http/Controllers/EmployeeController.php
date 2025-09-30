@@ -12,9 +12,10 @@ use Illuminate\Validation\Rule;
 
 class EmployeeController extends Controller
 {
+    // app/Http/Controllers/EmployeeController.php
     public function index()
     {
-        $employees = Employee::with(['department', 'designation'])->get();
+        $employees = Employee::with(['department', 'designation'])->paginate(5);
         return view('employees.index', compact('employees'));
     }
 
@@ -100,6 +101,4 @@ class EmployeeController extends Controller
         $employee = Auth::user()->employee;
         return view('employee.dashboard', compact('employee'));
     }
-
-
 }

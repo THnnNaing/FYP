@@ -1,9 +1,11 @@
+<!-- resources/views/employees/index.blade.php -->
 @extends('layouts.app')
+
+@section('title', 'Employees')
 
 @section('content')
 <div class="container py-4">
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
-        <h1 class="text-dark fw-bold mb-2 mb-md-0">Employees</h1>
         @if(auth()->user()->user_type === 'admin' || auth()->user()->user_type === 'hr')
             <a href="{{ route('employees.create') }}" class="btn btn-primary d-flex align-items-center gap-2">
                 <i class="bi bi-plus-lg"></i> <span>Add Employee</span>
@@ -14,8 +16,8 @@
     <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table align-middle mb-0 text-nowrap">
-                    <thead class="table-light">
+                <table class="table align-middle text-nowrap">
+                    <thead>
                         <tr>
                             <th class="ps-4">Name</th>
                             <th>Email</th>
@@ -28,21 +30,16 @@
                     <tbody>
                         @foreach($employees as $employee)
                             <tr>
-                                <td class="ps-4">{{ $employee->first_name }} {{ $employee->last_name }}</td>
-                                <td>{{ $employee->email }}</td>
-                                <td>{{ $employee->department->name }}</td>
-                                <td>{{ $employee->designation->title }}</td>
-                                <td>
-                                    <span class="badge rounded-pill text-capitalize
-                                        @if($employee->status === 'active') bg-success
-                                        @elseif($employee->status === 'on_leave') bg-warning text-dark
-                                        @elseif($employee->status === 'terminated') bg-danger
-                                        @else bg-secondary
-                                        @endif">
+                                <td class="ps-4" data-label="Name">{{ $employee->first_name }} {{ $employee->last_name }}</td>
+                                <td data-label="Email">{{ $employee->email }}</td>
+                                <td data-label="Department">{{ $employee->department->name }}</td>
+                                <td data-label="Designation">{{ $employee->designation->title }}</td>
+                                <td data-label="Status">
+                                    <span class="badge badge-{{ $employee->status === 'active' ? 'success' : ($employee->status === 'on_leave' ? 'warning' : ($employee->status === 'terminated' ? 'danger' : 'secondary')) }}">
                                         {{ str_replace('_', ' ', $employee->status) }}
                                     </span>
                                 </td>
-                                <td class="text-end pe-4">
+                                <td data-label="Actions" class="text-end pe-4">
                                     <div class="d-flex flex-wrap gap-2 justify-content-end">
                                         <a href="{{ route('employees.show', $employee) }}" 
                                            class="btn btn-sm btn-outline-info d-flex align-items-center gap-1">
@@ -72,64 +69,10 @@
                     </tbody>
                 </table>
             </div>
+            <div class="pagination-container">
+                {{ $employees->links() }}
+            </div>
         </div>
     </div>
 </div>
-
-<style>
-    .table thead th {
-        padding: 12px 16px;
-        font-weight: 600;
-        background-color: #f8f9fa;
-        white-space: nowrap;
-    }
-
-    .table tbody td {
-        padding: 12px 16px;
-        vertical-align: middle;
-        border-bottom: 1px solid #f0f0f0;
-        white-space: nowrap;
-    }
-
-    .table tbody tr:hover {
-        background-color: rgba(0, 123, 255, 0.03);
-    }
-
-    .btn-sm i {
-        font-size: 0.85rem;
-    }
-
-    .badge {
-        font-size: 0.8rem;
-        padding: 0.4em 0.75em;
-        font-weight: 500;
-    }
-
-    @media (max-width: 768px) {
-        .table-responsive {
-            font-size: 0.9rem;
-        }
-
-        .table thead {
-            display: none;
-        }
-
-        .table tbody td {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 12px;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .table tbody td::before {
-            content: attr(data-label);
-            font-weight: 600;
-            color: #495057;
-        }
-
-        .table tbody tr td:first-child {
-            font-weight: bold;
-        }
-    }
-</style>
 @endsection

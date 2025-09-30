@@ -2,6 +2,7 @@
 
 @section('content')
 <div class="container py-4">
+    <!-- WELCOME BACK MESSAGE IS HERE  -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="text-dark fw-bold">Admin Dashboard</h1>
         <div class="text-muted">Welcome back, {{ Auth::user()->name }}</div>
